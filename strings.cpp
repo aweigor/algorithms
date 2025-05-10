@@ -13,6 +13,7 @@
 #include <format>
 #include <regex>
 #include <iostream>
+#include <map>
 
 std::string alphabet_position(const std::string &text) {
     std::string result = "";
@@ -90,4 +91,17 @@ std::string to_camel_case_bp(std::string s)
         if(s[i] == '-' || s[i] == '_')
             s.erase(i, 1), s[i] = toupper(s[i]);
     return s;
+}
+
+std::map<char, unsigned> count(const std::string& string) {
+    std::map<char, unsigned> result;
+    for (auto &c: string)
+        result[c] = result.find(c) != result.end() ? ++result[c] : 1;
+    return result;
+}
+
+std::map<char, unsigned> count_bp(const std::string& string) {
+  std::map<char, unsigned> r;
+  for (const char& c: string) ++r[c];
+  return r;
 }
