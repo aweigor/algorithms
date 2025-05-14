@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <cstdint>
 #include <vector>
+#include <string>
 
 #endif /* numbers_hpp */
 
@@ -18,3 +19,4 @@ int square_digits(int num);
 void convertToBinary(uint64_t n, std::vector<uint64_t> &s);
 int multiples35(int number);
 int multiples35_slow(int number);
+std::string uint32_to_ip(uint32_t ip);
