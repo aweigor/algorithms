@@ -20,3 +20,4 @@ void convertToBinary(uint64_t n, std::vector<uint64_t> &s);
 int multiples35(int number);
 int multiples35_slow(int number);
 std::string uint32_to_ip(uint32_t ip);
+std::string rgb_to_hex(int r, int g, int b);
