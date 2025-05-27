@@ -19,3 +19,4 @@ std::string duplicate_encoder(const std::string& word);
 std::string add_binary(uint64_t a, uint64_t b);
 std::string to_camel_case(std::string text);
 std::map<char, unsigned> count(const std::string& string);
+std::vector<std::string> wave(std::string y);
