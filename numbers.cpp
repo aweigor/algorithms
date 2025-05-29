@@ -338,3 +338,20 @@ bool isPrime(int num) {
     }
     return true;
 }
+
+
+bool isPrime6(int num) {
+    if (num == 2 || num == 3 || num == 5)
+        return true;
+    if (num <= 1 || num % 2 == 0 || num % 3 == 0 || num % 5 == 0)
+        return false;
+    int p5, p1;
+    int maxn = sqrt(num) / 6;
+    for (int i = 1; i <= maxn; i++) {
+        p1 = i * 6 + 1;
+        p5 = i * 6 + 5;
+        if (num % p1 == 0 || num % p5 == 0)
+            return false;
+    }
+    return true;
+}
