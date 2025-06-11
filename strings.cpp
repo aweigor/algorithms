@@ -14,6 +14,7 @@
 #include <regex>
 #include <iostream>
 #include <map>
+#include <algorithm>
 
 std::string alphabet_position(const std::string &text) {
     std::string result = "";
@@ -117,4 +118,21 @@ std::vector<std::string> wave(std::string y){
         c = tolower(c);
     }
     return frames;
+}
+
+
+
+std::string spinWords(const std::string &str)
+{
+    std::stringstream ss(str);
+    std::string result;
+    std::string buff;
+    while (ss >> buff) {
+        if (buff.size() >= 5) {
+            std::reverse(buff.begin(), buff.end());
+        }
+        result += buff + ' ';
+    }
+    result.pop_back();
+    return result;
 }

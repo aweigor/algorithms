@@ -20,3 +20,4 @@ std::string add_binary(uint64_t a, uint64_t b);
 std::string to_camel_case(std::string text);
 std::map<char, unsigned> count(const std::string& string);
 std::vector<std::string> wave(std::string y);
+std::string spinWords(const std::string &str); // https://www.codewars.com/kata/5264d2b162488dc400000001
