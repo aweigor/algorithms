@@ -21,3 +21,4 @@ std::string to_camel_case(std::string text);
 std::map<char, unsigned> count(const std::string& string);
 std::vector<std::string> wave(std::string y);
 std::string spinWords(const std::string &str); // https://www.codewars.com/kata/5264d2b162488dc400000001
+std::string likes(const std::vector<std::string> &names); // https://www.codewars.com/kata/5266876b8f4bf2da9b000362/solutions/cpp
