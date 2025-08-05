@@ -29,6 +29,7 @@ const getNumbersMap = () => {
   for (const n of NUMBERS) {
     numbersMap.set(n[0], n[1]);
   }
+  return numbersMap;
 };
 
 export function execute(a: number, b: number): number {
