@@ -154,23 +154,31 @@ export function firstRun(graph: GraphT, numbersMap: Map<number, number>) {
   );
 
   // traverse all discovered to search for tiles with low entropy
-  const checkList = discoveredKeys.map((k) => graph[k]);
+  const checkList = discoveredKeys.map((k) => graph[k].data);
 
-  let _tile: TilePraramsT | undefined;
-  while ((_tile = checkList.shift())) {
+  let _tile: ITile;
+  while ((_tile = checkList.shift() as ITile)) {
     if (!_tile) break;
-    if (!_tile.data.value) continue;
-    const undiscoveredAdjacents = _tile.adjacent.filter((t) => !t.discovered);
+    if (!_tile.value) continue;
+    const _params = getTile(graph, _tile.key);
+    if (!_params) continue;
+    const undiscoveredAdjacents = _params.adjacent.filter((t) => !t.discovered);
     if (!undiscoveredAdjacents) continue;
     else if (undiscoveredAdjacents.length === 1) {
-      if (!numbersMap.keys().some((k) => k === _tile?.data.value)) {
+      if (!numbersMap.keys().some((k) => k === _tile.value)) {
         throwError(ERROR_STATE_NOT_VALID);
       }
-      const tile = undiscoveredAdjacents[0] as ITile;
+      const tile = getTile(graph, undiscoveredAdjacents[0].key);
+      if (!tile) continue;
       updateTile(graph, {
-        ...tile,
-        number: _tile.data.value, // checked
+        ...tile.data,
+        number: _tile.value, // checked
       });
+      for (const a of tile.adjacent) {
+        if (a.discovered && !checkList.find((p) => p.key === a.key)) {
+          checkList.push(a); // push back to the cycle
+        }
+      }
     } else {
     }
   }
