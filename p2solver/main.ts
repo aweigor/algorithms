@@ -194,11 +194,51 @@ export function firstRun(graph: GraphT, numbersMap: Map<number, number>) {
         _tile.value - discoveredSum,
         numbersMap
       );
+      for (const numSet of dec) {
+        const allocations = getAllocations(
+          numSet,
+          undiscoveredAdjacents.length
+        );
+      }
     }
   }
 }
 
-/** Decomposes given sum into numbers from list **/
+/**
+ * Gets all allocations (permutations) of numbers across undiscovered nodes
+ * We do not really need the nodes, just the max count of places
+ */
+function getAllocations(numbers: number[], cellCount: number) {
+  const padded = [...numbers];
+  while (padded.length < cellCount) {
+    padded.push(0);
+  }
+
+  const result: number[][] = [];
+
+  function backtrack(start: number) {
+    if (start === padded.length) {
+      result.push([...padded]);
+      return;
+    }
+    const used = new Set<number>();
+    for (let i = start; i < padded.length; i++) {
+      if (used.has(padded[i])) continue;
+      used.add(padded[i]);
+      [padded[start], padded[i]] = [padded[i], padded[start]];
+      backtrack(start + 1);
+      [padded[start], padded[i]] = [padded[i], padded[start]];
+    }
+  }
+
+  backtrack(0);
+  return result;
+}
+
+/**
+ * Decomposes given sum into numbers from list
+ * Performs validation on maximum numbers with value in set
+ * **/
 function decompose(
   lenght: number,
   sum: number,
