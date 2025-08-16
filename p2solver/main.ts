@@ -1,12 +1,13 @@
 /**
  * Problem:
  * given board of 7 * 11 tiles . possible numbers are finite.
- * there are tiles with null values. their value is sum of ajacent non-null tiles.
+ * there are tiles with number (non-null) and ones without.
+ * value of tile is sum of its ajacents non-null tiles.
  * there are discovered tiles and unknown ones.
  * there are closed tiles and opened ones. non-null tile may be discovered but closed.
  * tails have string keys that defines its positions on the board.
  * Objective:
- * compute all possible positions of non-null numbers in the closed tiles.
+ * compute all possible positions of numbers in the non-null undiscovered tiles.
  * result needs to be an array of all opened tiles and tiles with probabilities map.
  **/
 
@@ -16,6 +17,13 @@ function notNull(something: any): something is Omit<null, any> {
 
 function throwError(message?: string): never {
   throw new Error(message);
+}
+
+function deepEqual(
+  obj1: Record<string, unknown>,
+  obj2: Record<string, unknown>
+) {
+  return false;
 }
 
 interface ITile {
@@ -29,6 +37,13 @@ interface ITile {
 
 type TilePraramsT = { data: ITile; adjacent: ITile[] };
 type GraphT = Record<string, TilePraramsT>;
+type TileAllocationStateT = Record<string, number>[];
+
+/**
+ * The structure describes groups of state classes, independent fields of node states -
+ * - set of numbers distributed across undiscovered adjacents.
+ */
+type TileStateClassesT = Map<string, TileAllocationStateT>[];
 
 const ROWS_NUM = 11;
 const COLS_NUM = 7;
@@ -76,13 +91,30 @@ const getTile: (graph: GraphT, key: string) => TilePraramsT | null = (
   return Object.values(graph).find((t) => t.data.key === key) || null;
 };
 
-const updateTile: (graph: GraphT, data: ITile) => void = (graph, data) => {
-  const tile = getTile(graph, data.key);
+const updateTile: (graph: GraphT, key: string, data: Partial<ITile>) => void = (
+  graph,
+  key,
+  data
+) => {
+  const tile = getTile(graph, key);
   if (tile) {
     tile.data = {
       ...tile.data,
       ...data,
+      key,
     };
+  }
+};
+
+const updateTiles = (
+  graph: GraphT,
+  items: {
+    key: string;
+    data: Partial<ITile>;
+  }[]
+) => {
+  for (const item of items) {
+    updateTile(graph, item.key, item.data);
   }
 };
 
@@ -147,14 +179,98 @@ const getBoardGraph: (openedTiles: ITile[]) => GraphT = (openedTiles) => {
 };
 
 export function execute(result: ITile[]): void {
-  const discoveredKeys = result.map((t) => t.key);
   const graph = getBoardGraph(JSON.parse(JSON.stringify(result)));
-  firstRun(graph, getNumbersMap());
+  const allocationStates: Map<string, TileAllocationStateT> = new Map();
+  firstRun(graph, getNumbersMap(), allocationStates);
+  // We got all states of all tiles with more than one undiscovered adjacent
+  // Now we need to split tiles into classes.
+  // Classification rule: all keys of undiscovered tiles
+  // are different against all tiles in another class
+  const allocationStateClasses = [allocationStates];
+  getAllocationStateClasses(allocationStates);
+
+  // We can handle each class separately and concurrently
+  for (const stateClass of allocationStateClasses) {
+  }
 }
 
-export function firstRun(graph: GraphT, numbersMap: Map<number, number>) {
-  const discoveredKeys = Object.keys(graph).filter(
-    (k) => graph[k].data.discovered
+/**
+ * Divides allocation states into classes - areas without intersections by keys
+ * - Traverse all states. for each state key get adjacent keys and apply these keys to every multiple of coupled keys area.
+ * - If there is no area that contains al least one key of ajacent keys set, create new area.
+ * - Get result areas and look for intersections over other areas.
+ * - If area keys intersects another area, merge two areas.
+ */
+export function getAllocationStateClasses(
+  states: Map<string, TileAllocationStateT>
+): TileStateClassesT {
+  const keyFields: Set<string>[] = [];
+  for (const k of states.keys()) {
+    const state = states.get(k);
+    if (state && state.length) {
+      const adjacentKeys = Object.keys(state.at(0)!);
+      let classFound = false;
+      for (const keys of keyFields) {
+        if (adjacentKeys.some((k) => keys.has(k))) {
+          classFound = true;
+          for (const ak of adjacentKeys) {
+            keys.add(ak);
+          }
+          break;
+        }
+      }
+      if (!classFound) {
+        const keys = new Set<string>();
+        for (const ak of adjacentKeys) {
+          keys.add(ak);
+        }
+        keyFields.push(keys);
+      }
+    }
+  }
+  const mergedFields: Set<string>[] = [];
+  for (const field of keyFields) {
+    let classFound = false;
+    for (const field2 of mergedFields) {
+      if (field.intersection(field2).size) {
+        for (const key of field.values()) {
+          field2.add(key);
+        }
+      }
+    }
+    if (!classFound) {
+      mergedFields.push(field);
+    }
+  }
+
+  const result: TileStateClassesT = mergedFields.map(() => new Map());
+  for (const k of states.keys()) {
+    const state = states.get(k);
+    if (state && state.length) {
+      const adjacentKeys = Object.keys(state.at(0)!);
+      const groupIndex = mergedFields.findIndex((f) =>
+        adjacentKeys.some((k) => f.has(k))
+      );
+      if (groupIndex !== -1) {
+        result[groupIndex].set(k, state);
+      }
+    }
+  }
+
+  return result;
+}
+
+export function firstRun(
+  graph: GraphT,
+  numbersMap: Map<number, number>,
+  allocationStates: Map<string, TileAllocationStateT>
+) {
+  function isDiscovered(tile: ITile) {
+    return tile.opened && tile.discovered;
+  }
+
+  const discoveredKeys = Object.keys(graph).filter((k) =>
+    isDiscovered(graph[k].data)
   );
 
   const checkList = discoveredKeys.map((k) => graph[k].data);
@@ -162,56 +278,84 @@ export function firstRun(graph: GraphT, numbersMap: Map<number, number>) {
   let _tile: ITile;
   while ((_tile = checkList.shift() as ITile)) {
     if (!_tile) break;
-    if (!_tile.value) continue;
+    if (!_tile.value) continue; // TODO: check if tile has adjacents. if value equals 0, means that all adjacents are
     const _params = getTile(graph, _tile.key);
     if (!_params) continue;
     const undiscoveredAdjacents = _params.adjacent.filter((t) => !t.discovered);
+    if (!undiscoveredAdjacents) continue;
     const discoveredAdjacents = _params.adjacent.filter((t) => t.discovered);
     const discoveredSum = discoveredAdjacents.reduce(
       (el, acc) => el + (acc.number || 0),
       0
     );
-    if (!undiscoveredAdjacents) continue;
-    else if (undiscoveredAdjacents.length === 1) {
+    if (_tile.value - discoveredSum === 0) {
+      for (const tile of undiscoveredAdjacents) {
+        const tileData = getTile(graph, tile.key);
+        if (!tileData) break;
+        updateTile(graph, tile.key, {
+          number: 0,
+          discovered: true,
+        });
+        for (const a of tileData.adjacent) {
+          if (isDiscovered(a) && !checkList.find((p) => p.key === a.key)) {
+            checkList.push(a); // requeue
+          }
+        }
+      }
+    }
+    if (undiscoveredAdjacents.length === 1) {
       if (!numbersMap.keys().some((k) => k === _tile.value)) {
         throwError(ERROR_STATE_NOT_VALID);
       }
       const tile = getTile(graph, undiscoveredAdjacents[0].key);
       if (!tile) continue;
-      updateTile(graph, {
-        ...tile.data,
+      updateTile(graph, tile.data.key, {
         number: _tile.value,
+        discovered: true,
       });
       for (const a of tile.adjacent) {
-        if (a.discovered && !checkList.find((p) => p.key === a.key)) {
+        if (isDiscovered(a) && !checkList.find((p) => p.key === a.key)) {
           checkList.push(a); // requeue
         }
       }
     } else {
-      // undiscovered > 1
+      // undiscovered > 1 means that we dont know exact distribution under undiscovered adjacent tiles
       const dec = decompose(
         undiscoveredAdjacents.length,
         _tile.value - discoveredSum,
         numbersMap
       );
 
+      const tileAllocationState: TileAllocationStateT = [];
+
       for (const numSet of dec) {
-        // Here we could check all allocations to find those which number is only one.
-        // but there is no chances that is will happen. But in this place we could group
-        // keys into areas of the same class. Classification rule:
-        // option 1. all keys are different / have same.
-        // options 2. all keys are different or same (intersection) have same set of values
+        // Here we could check all allocations to find those which number is single across all states.
+        // but there is no chances that is will happen
         const allocations = getAllocations(
           numSet,
           undiscoveredAdjacents.length
         );
+        for (const alloc of allocations) {
+          const allocState = Object.fromEntries(
+            alloc.map((a, i) => {
+              return [_params.adjacent[i].key, a];
+            })
+          );
+          if (
+            !tileAllocationState.some((state) => deepEqual(state, allocState))
+          ) {
+            tileAllocationState.push(allocState);
+          }
+        }
       }
+
+      allocationStates.set(_params.data.key, tileAllocationState);
     }
   }
 }
 
 /**
- * Gets all allocations (permutations) of numbers across undiscovered nodes
+ * Computes all allocations (permutations) of numbers across undiscovered nodes
  * We do not really need the nodes, just the max count of places
  * TODO: Heap
  */
