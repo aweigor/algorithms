@@ -15,9 +15,15 @@ function notNull(something: any): something is Omit<null, any> {
   return something !== null;
 }
 
-function throwError(message?: string): never {
-  throw new Error(message);
-}
+const ERRORS = {
+  default: () => new Error("unexpected error"),
+  numberNotFound: () => new Error("number not found"),
+  stateNotFound: () => new Error("impossible state"),
+};
+
+const throwError = <T extends keyof typeof ERRORS>(error?: T) => {
+  throw ERRORS[error || "default"];
+};
 
 function equal(obj1: Record<string, number>, obj2: Record<string, number>) {
   for (const k of Object.keys(obj1)) {
@@ -49,7 +55,6 @@ type TileStateClassesT = Map<string, TileAllocationStateT>[];
 
 const ROWS_NUM = 11;
 const COLS_NUM = 7;
-const ERROR_STATE_NOT_VALID = "invalid state";
 
 const NUMBERS: [number, number][] = [
   [1, 1],
@@ -199,11 +204,125 @@ export function execute(result: ITile[]): GraphT {
   return graph;
 }
 
+function findConsistent(
+  state: Record<string, number>[],
+  edges: Record<string, number>[][],
+  result: Record<string, number>[][] = [],
+  numbers: Map<number, number>,
+  edgeIndex: number = 0
+): void {
+  if (!edges[edgeIndex + 1]) {
+    const consistentState: Record<string, number>[] = [];
+    for (const d_state of state) {
+      let isConsistent = true;
+      const _numbers = new Map(numbers);
+      for (const d_key of Object.keys(d_state)) {
+        if (d_state[d_key]) {
+          let number = _numbers.get(d_state[d_key]);
+          if (!number) {
+            return throwError("numberNotFound");
+          }
+          number--;
+          if (number < 0) {
+            isConsistent = false;
+            break;
+          }
+          _numbers.set(d_state[d_key], number);
+        }
+      }
+      if (isConsistent) {
+        consistentState.push(d_state);
+      }
+    }
+
+    void result.push(consistentState);
+    return;
+  }
+
+  const nextEdge = edges[edgeIndex + 1];
+  const new_domain: Record<string, number>[] = [];
+
+  for (const d_state of state) {
+    const d_stateKeys = Object.keys(d_state);
+    for (const state of nextEdge) {
+      if (
+        !d_stateKeys.some(
+          (key) => state[key] !== undefined && state[key] !== d_state[key]
+        )
+      ) {
+        new_domain.push({ ...d_state, ...state });
+      }
+    }
+  }
+
+  void findConsistent(new_domain, edges, result, numbers, edgeIndex + 1);
+}
+
+/**
+ * Groups consistent states into map with tile key as key and array of possible numbers as value
+ */
+export function joinConsistentAllocations(
+  numbersMap: Map<number, number>,
+  allocationStates: Map<string, TileAllocationStateT>
+): Map<string, number[]> {
+  const statesArray = Array.from(allocationStates.values());
+  const consistentResult: Record<string, number>[][] = [];
+  findConsistent(statesArray[0], statesArray, consistentResult, numbersMap);
+  return consistentResult.flat().reduce((acc, el) => {
+    for (const key of Object.keys(el)) {
+      if (!acc.has(key)) {
+        acc.set(key, [el.key]);
+      } else {
+        acc.set(key, [...(acc.get(key) as number[]), el.key]);
+      }
+    }
+    return acc;
+  }, new Map() as Map<string, number[]>);
+}
+
 export function secondRun(
   graph: GraphT,
   numbersMap: Map<number, number>,
   allocationStates: Map<string, TileAllocationStateT>
-) {}
+) {
+  const joinResult: Map<string, number[]> = joinConsistentAllocations(
+    numbersMap,
+    allocationStates
+  );
+  for (const key of joinResult.keys()) {
+    const numbers = joinResult.get(key)!;
+
+    // key - number, value - how many numbers in set for this tile
+    const numberCountMap = numbers.reduce((acc, el) => {
+      if (!acc.has(el)) {
+        acc.set(el, 1);
+      } else {
+        acc.set(el, acc.get(el)! + 1);
+      }
+      return acc;
+    }, new Map() as Map<number, number>);
+
+    const numberProbabilityMap: Map<number, number> = new Map(
+      numberCountMap.entries().map(([k, v]) => [k, v / numbers.length])
+    );
+
+    const numberProbabilityValues = Array.from(numberProbabilityMap.values());
+
+    const tileParams: Partial<ITile> = {
+      discovered: numberProbabilityValues.length > 1 ? false : true,
+      opened: false,
+      value: null,
+      number:
+        numberProbabilityValues.length === 1
+          ? numberProbabilityValues[0]
+          : null,
+      probabilities:
+        numberProbabilityValues.length > 1 ? numberProbabilityMap : null,
+    };
+
+    updateTile(graph, key, tileParams);
+  }
+}
 
 /**
  * Divides allocation states into classes - areas without intersections by keys
@@ -321,7 +440,7 @@ export function firstRun(
     }
     if (undiscoveredAdjacents.length === 1) {
       if (!numbersMap.keys().some((k) => k === _tile.value)) {
-        throwError(ERROR_STATE_NOT_VALID);
+        throwError("stateNotFound");
       }
       saveAndRequeue(undiscoveredAdjacents[0].key, {
         number: _tile.value,
