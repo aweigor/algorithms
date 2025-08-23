@@ -259,8 +259,7 @@ export function execute(startTiles: ITile[]): IGraph {
   // Now we need to split tiles into classes.
   // Classification rule: all keys of undiscovered tiles
   // are different against all tiles in another class
-  const allocationStateClasses = [allocationStates];
-  getAllocationStateClasses(allocationStates);
+  const allocationStateClasses = getAllocationStateClasses(allocationStates);
   // We can handle each class separately and concurrently
   for (const stateClass of allocationStateClasses) {
     secondRun(graph, numbersMap, stateClass);
@@ -574,7 +573,7 @@ export function getAllocations(numbers: number[], cellCount: number) {
  * Decomposes given sum into numbers from list
  * Performs validation on maximum numbers with value in set
  * **/
-function decompose(
+export function decompose(
   lenght: number,
   sum: number,
   countMap: Map<number, number>
