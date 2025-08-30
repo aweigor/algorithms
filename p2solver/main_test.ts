@@ -13,6 +13,7 @@ import {
   getAllocationStateClasses,
   ROWS_NUM,
   COLS_NUM,
+  secondRun,
 } from "./main.ts";
 import { assertEquals } from "@std/assert";
 
@@ -212,5 +213,34 @@ Deno.test(
 
     const stateClasses = getAllocationStateClasses(allocationStates);
     assertEquals(stateClasses.length, 4);
+  }
+);
+
+Deno.test(
+  "Must properly define probability of adjacent tiles",
+  function testFull1() {
+    const startState = [getTileWithValue(0, 0, 1)];
+    const graph = new BoardGraph(startState);
+    const allocationStates: Map<string, TileAllocationStateT> = new Map();
+    let numbersMap = getNumbersMap(graph);
+    firstRun(graph, numbersMap, allocationStates);
+    numbersMap = getNumbersMap(graph);
+    const stateClasses = getAllocationStateClasses(allocationStates);
+    for (const stateClass of stateClasses) {
+      secondRun(graph, numbersMap, stateClass);
+    }
+    const testTiles = [
+      graph.getTile(getKey(1, 1)),
+      graph.getTile(getKey(0, 1)),
+      graph.getTile(getKey(1, 0)),
+    ];
+    assertEquals(
+      testTiles.every(
+        (it) =>
+          !isNaN(Number(it?.probabilities?.get(1))) &&
+          Number(it?.probabilities?.get(1)).toFixed(1) === "0.3"
+      ),
+      true
+    );
   }
 );
