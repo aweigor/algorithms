@@ -86,7 +86,7 @@ export const ROWS_NUM = 11;
 export const COLS_NUM = 7;
 
 export const NUMBERS: [number, number][] = [
-  [1, 1],
+  [1, 3],
   [2, 4],
   [3, 4],
   [4, 2],
@@ -229,7 +229,7 @@ export class BoardGraph implements IGraph {
       .map((t) => t.key);
   }
 
-  getTile(key: string): ITile | null {
+  getTile(key: string | null): ITile | null {
     return this._data.find((t) => t.key === key) || null;
   }
 
@@ -334,9 +334,9 @@ export function joinConsistentAllocations(
   return consistentResult.flat().reduce((acc, el) => {
     for (const key of Object.keys(el)) {
       if (!acc.has(key)) {
-        acc.set(key, [el.key]);
+        acc.set(key, [el[key]]);
       } else {
-        acc.set(key, [...(acc.get(key) as number[]), el.key]);
+        acc.set(key, [...(acc.get(key) as number[]), el[key]]);
       }
     }
     return acc;
@@ -623,13 +623,3 @@ export function decompose(
 }
 
 /**/
-
-function test() {
-  const a = 1;
-
-  return a;
-}
-
-test();
-
-// execute([]);
