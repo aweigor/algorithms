@@ -1,0 +1,4 @@
+[submodule "bubble-sort/snowhouse"]
+	path = bubble-sort/snowhouse
+	url = https://github.com/banditcpp/snowhouse
+	branch = headers-only
