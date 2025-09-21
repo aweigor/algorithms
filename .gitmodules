@@ -2,3 +2,7 @@
 	path = bubble-sort/snowhouse
 	url = https://github.com/banditcpp/snowhouse
 	branch = headers-only
+[submodule "permutations-all/snowhouse"]
+	path = permutations-all/snowhouse
+	url = https://github.com/banditcpp/snowhouse
+	branch = headers-only
