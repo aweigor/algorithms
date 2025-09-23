@@ -6,3 +6,7 @@
 	path = permutations-all/snowhouse
 	url = https://github.com/banditcpp/snowhouse
 	branch = headers-only
+[submodule "sum-of-divided/snowhouse"]
+	path = sum-of-divided/snowhouse
+	url = https://github.com/banditcpp/snowhouse
+	branch = headers-only
