@@ -5,6 +5,8 @@
 #include <stack>
 #include <vector>
 
+using namespace std;
+
 void print_vector(std::vector<int> vec) {
   for (auto &it: vec) {
     std::cout << it << ",";
@@ -102,6 +104,92 @@ static void decompose_iterative_first_from_end(int target, std::vector<std::vect
         }
     }
 }
+
+class Decomp
+{
+  public:
+  static std::vector<long long> decompose(long long n);
+};
+
+/*
+ * What we want to do is loop backwards through the integers 1 to n 
+ * (using a for loop, variable 'i') and deduct i*i from 'remaining',
+ * which starts at n*n.
+ *
+ * Whenever we hit a 1, if 'remaining' is not 0, we have to take a step
+ * back and retry the last index, but with the previous index being 
+ * deducted by one.
+ *
+ * When we hit a 1 and remaining is 0, the correct solution is found.
+ * 
+ */
+vector<long long> Decomp::decompose(long long n)
+{
+  vector<long long> v;
+
+  long long nsquared = pow(n, 2);  // total value to achieve with our squared numbers
+  long long remaining = nsquared;  // remaining value to get there
+  
+  for(int i = n-1; i > 0; i--)
+  { 
+    if(pow(i, 2) <= remaining)
+    {
+      // number (squared) fits in 'remaining' value, add to vector
+      v.insert(v.begin(), i);
+      remaining -= pow(i, 2);
+    }
+    
+    while(i == 1 && remaining > 0)
+    {
+      // reached a 1 and 'nsquared' is still not reached
+      // erase index and try again with preceding value -1
+      v.erase(v.begin());
+      v[0] -= 1;
+      i = v[0];
+      
+      // recalculate 'remaining'
+      remaining = nsquared;
+      for(auto j : v)
+        remaining -= pow(j, 2);    
+    }
+
+  }
+    
+  return v;
+}
+
+class Decomp2
+{
+  public:
+  static std::vector<long long> decompose(long long n);
+  private:
+  static bool Divide(std::vector<long long> &numbers, double remain, long long last);
+};
+
+std::vector<long long> Decomp2::decompose(long long n)
+{
+  auto list = std::vector<long long>();
+  if (Divide(list, n * n, n))
+      return list;
+  return std::vector<long long>() = {};
+}
+
+bool Decomp2::Divide(std::vector<long long> &numbers, double remain, long long last)
+{
+    if (remain <= 0)
+        return remain == 0;
+    for (long long i = last - 1; i > 0; i--)
+    {
+        if (Divide(numbers, remain - (i * i), i))
+        {
+            numbers.push_back(i);
+            return true;
+        }
+    }
+    return false;
+}
+
+
 
 std::vector<int> decompose(int n) {
   std::vector<std::vector<int>> result;
