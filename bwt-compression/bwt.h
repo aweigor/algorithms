@@ -3,8 +3,10 @@
 #include <algorithm>
 #include <sstream>
 #include <vector>
+
 std::string bwt(std::string &s) 
 {
+  s += '^'; // add 'EOF' character
   // create a table, where the rows are all possible rotations of s
   std::vector<std::string> matrix{};
   std::string shift;
@@ -23,4 +25,33 @@ std::string bwt(std::string &s)
     ss << i->back();
   }
   return ss.str();
+}
+
+std::string inverse_bwt(std::string &s)
+{
+  // create empty table
+  std::vector<std::string> matrix{};
+  // fill table with first letters of bwt string 
+  for (auto &c: s) {
+    matrix.push_back(std::string(1, c));
+  }
+  for (int i = 0; i < s.size(); ++i) {
+    // sort rows alphabetically
+    for (auto k = matrix.begin(); k != matrix.end(); ++k) {
+      std::rotate(std::upper_bound(matrix.begin(), k, *k), k, k + 1);
+    }
+    // update table with first letters of bwt string;
+    for (int j = 0; j < s.size(); ++j) {
+      matrix[j] = s[j] + matrix[j];
+    }
+  }
+  // find row which eds with 'EOF' character
+  std::string result;
+  for (auto &row: matrix) {
+    if (row.back() == '^') {
+      result = row;
+      break;
+    }
+  }
+  return result; 
 }
