@@ -1,7 +1,7 @@
 #pragma once
 
-#include "snowhouse/assert.h"
-#include "snowhouse/snowhouse.h"
+#include "../snowhouse/assert.h"
+#include "../snowhouse/snowhouse.h"
 #include "square-into-squares.h"
 #include <iostream>
 #include <vector>

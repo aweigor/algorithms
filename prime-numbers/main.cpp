@@ -1,4 +1,4 @@
-#include "snowhouse/snowhouse.h"
+#include "../snowhouse/snowhouse.h"
 #include "sum-of-divided.h"
 #include <vector>
 

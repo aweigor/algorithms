@@ -1,4 +1,4 @@
-#include "snowhouse/snowhouse.h"
+#include "../snowhouse/snowhouse.h"
 #include "bubble-sort.hpp"
 #include <vector>
 
