@@ -1,7 +1,7 @@
-package main
+package fundamentals
 
 import (
-    "testing"
+	"testing"
 )
 
 func TestTribonacci(t *testing.T) {
@@ -16,5 +16,14 @@ func TestTribonacci(t *testing.T) {
         if result[i] != expected[i] {
             t.Errorf("At index %d: got %f, want %f", i, result[i], expected[i])
         }
+    }
+}
+
+func TestDisemvowel(t *testing.T) {
+    result := Disemvowel("This website is for losers LOL!")
+    expected := "Ths wbst s fr lsrs LL!"
+
+    if result != expected {
+        t.Errorf("Strings mismatch: got %c, want %c", len(result), len(expected))
     }
 }

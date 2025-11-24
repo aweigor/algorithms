@@ -1,3 +1,3 @@
-module main
+module fundamentals
 
 go 1.25.4

@@ -1,6 +1,9 @@
-package main
+package fundamentals
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func Tribonacci(signature [3]float64, n int) (r []float64) {
 	r = signature[:]
@@ -11,7 +14,32 @@ func Tribonacci(signature [3]float64, n int) (r []float64) {
 	return r[:n]
 }
 
+// www.codewars.com/kata/52fba66badcd10859f00097e
+func Disemvowel(comment string) string {
+	isConsonant := func(letterRune rune) (bool) {
+		vowels := "aeiouAEIOU"
+		return !strings.ContainsRune(vowels, letterRune)
+	}
+	var builder strings.Builder
+	for _, r := range comment {
+		if (isConsonant(r)) {
+			builder.WriteRune(r)
+		}
+	}
+	return builder.String()
+}
+
+func DisemvowelClean(comment string) string {
+	for _,c := range "aiueoAIUEO"{
+		 comment = strings.ReplaceAll(comment, string(c), "")
+	 }
+	 return comment
+ }
+
 func main() {
 	result := Tribonacci([3]float64{1, 1, 1}, 10)
-    	fmt.Println("Tribonacci:", result)
+  fmt.Println("Tribonacci:", result)
+	result2 := Disemvowel("This website is for losers LOL!")
+	fmt.Println("Disemvowel:", result2)
+
 }
