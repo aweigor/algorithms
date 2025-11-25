@@ -1,4 +1,4 @@
-package fundamentals
+package main
 
 import (
 	"fmt"
@@ -56,9 +56,30 @@ func Passengers_clean(busStops [][2]int) (inBus int) {
   return
 }
 
+// https://www.codewars.com/kata/56747fd5cb988479af000028/
+func GetMiddle(s string) string {
+	mid := len(s) / 2
+	if len(s) < 2 {
+		return s
+	}
+	if len(s) % 2 == 0 {
+		return s[mid-1:mid+1]
+	} else {
+		return s[mid:mid+1]
+	}	
+}
+
+func GetMiddle_clean(s string) string {
+	n := len(s)
+	if n==0 {return s}
+	return s[(n - 1) / 2 : n / 2 + 1]
+}
+
 func main() {
 	result := Tribonacci([3]float64{1, 1, 1}, 10)
   fmt.Println("Tribonacci:", result)
 	result2 := Disemvowel("This website is for losers LOL!")
 	fmt.Println("Disemvowel:", result2)
+	result3 := GetMiddle("Test")
+	fmt.Println("GetMiddle:", result3)
 }

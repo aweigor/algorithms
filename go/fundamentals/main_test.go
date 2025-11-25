@@ -1,4 +1,4 @@
-package fundamentals
+package main
 
 import (
 	"testing"
@@ -33,5 +33,14 @@ func TestBusStop(t *testing.T) {
     expected := 5
     if result != expected {
         t.Errorf("Length mismatch: got %d, want %d", result, expected)
+    }
+}
+
+func TestGetMiddle(t *testing.T) {
+    result := GetMiddle("test")
+    
+    expected := "es"
+    if result != expected {
+        t.Errorf("Strings mismatch: got %c, want %c", len(result), len(expected))
     }
 }
