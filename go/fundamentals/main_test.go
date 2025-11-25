@@ -27,3 +27,11 @@ func TestDisemvowel(t *testing.T) {
         t.Errorf("Strings mismatch: got %c, want %c", len(result), len(expected))
     }
 }
+
+func TestBusStop(t *testing.T) {
+    result := Passengers([][2]int{{10,0},{3,5},{5,8}})
+    expected := 5
+    if result != expected {
+        t.Errorf("Length mismatch: got %d, want %d", result, expected)
+    }
+}

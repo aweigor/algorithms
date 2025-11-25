@@ -34,12 +34,31 @@ func DisemvowelClean(comment string) string {
 		 comment = strings.ReplaceAll(comment, string(c), "")
 	 }
 	 return comment
- }
+}
+
+// https://www.codewars.com/kata/5648b12ce68d9daa6b000099/
+func Passengers(busStops [][2]int) int {
+  var result int
+	for _, inout := range busStops {
+		result += inout[0]
+		result -= inout[1]
+		if (result < 0) {
+			return 0
+		}
+	}
+  return result
+}
+
+func Passengers_clean(busStops [][2]int) (inBus int) {
+  for _, stopInfo := range busStops {
+    inBus += stopInfo[0] - stopInfo[1]
+  }  
+  return
+}
 
 func main() {
 	result := Tribonacci([3]float64{1, 1, 1}, 10)
   fmt.Println("Tribonacci:", result)
 	result2 := Disemvowel("This website is for losers LOL!")
 	fmt.Println("Disemvowel:", result2)
-
 }
