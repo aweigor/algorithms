@@ -44,3 +44,11 @@ func TestGetMiddle(t *testing.T) {
         t.Errorf("Strings mismatch: got %c, want %c", len(result), len(expected))
     }
 }
+
+func TestFindMissingRune(t *testing.T) {
+    result := FindMissingLetter([]rune{'a', 'b', 'c', 'd', 'f'})
+    expected := 'e'
+    if result != expected {
+        t.Errorf("Length mismatch: got %d, want %d", result, expected)
+    }
+}

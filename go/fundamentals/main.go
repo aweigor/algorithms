@@ -75,6 +75,28 @@ func GetMiddle_clean(s string) string {
 	return s[(n - 1) / 2 : n / 2 + 1]
 }
 
+// https://www.codewars.com/kata/5839edaa6754d6fec10000a2/
+func FindMissingLetter(chars []rune) rune {
+	if (len(chars) < 2) {
+		panic("Must contain at least 2 chars")
+	}
+	for i := 1; i < len(chars); i++ {
+		if chars[i]-chars[i-1] > 1 {
+				return chars[i-1] + 1
+		}
+	}
+	panic("No missing letter found")
+}
+
+
+func FindMissingLetter_clean(a []rune) rune {
+  c := a[0]
+  for _,v :=range a[1:] {
+    if  c++; v != c {break}
+  }
+  return c
+}
+
 func main() {
 	result := Tribonacci([3]float64{1, 1, 1}, 10)
   fmt.Println("Tribonacci:", result)
@@ -82,4 +104,6 @@ func main() {
 	fmt.Println("Disemvowel:", result2)
 	result3 := GetMiddle("Test")
 	fmt.Println("GetMiddle:", result3)
+	result4 := FindMissingLetter([]rune{'a', 'b', 'c', 'd', 'f'})
+	fmt.Println("FindMissingLetter:", result4)
 }
