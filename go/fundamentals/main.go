@@ -97,6 +97,57 @@ func FindMissingLetter_clean(a []rune) rune {
   return c
 }
 
+var decoder = map[rune]int{
+	'I': 1,
+	'V': 5,
+	'X': 10,
+	'L': 50,
+	'C': 100,
+	'D': 500,
+	'M': 1000,
+}
+
+
+// https://www.codewars.com/kata/51b6249c4612257ac0000005/
+// IIV_<-- ahead
+func DecodeRoman(roman string) int {
+	
+	sum, sum_before, ahead := 0, 0, 0
+	
+	for i := len(roman)-1 ; i >= 0; i-- {
+		current := decoder[rune(roman[i])]
+		
+		if current > ahead {
+			sum_before = sum
+			sum += current
+		} else if current < ahead {
+			sum_before = sum
+			sum -= current
+		} else if current == ahead {
+			if sum - sum_before >= 0 {
+				sum_before = sum
+				sum += current
+			} else {
+				sum_before = sum
+				sum -= current
+			}
+		}
+		
+		ahead = current
+	}
+
+	return sum
+}
+
+func DecodeRoman_recursive(roman string) int {
+	if len(roman) == 0 { return 0 }
+	first := decoder[rune(roman[0])]
+	if len(roman) == 1 { return first }
+	next := decoder[rune(roman[1])]
+	if next > first { return (next - first) + DecodeRoman_recursive(roman[2:]) }
+	return first + DecodeRoman_recursive(roman[1:])
+}
+
 func main() {
 	result := Tribonacci([3]float64{1, 1, 1}, 10)
   fmt.Println("Tribonacci:", result)
@@ -106,4 +157,8 @@ func main() {
 	fmt.Println("GetMiddle:", result3)
 	result4 := FindMissingLetter([]rune{'a', 'b', 'c', 'd', 'f'})
 	fmt.Println("FindMissingLetter:", result4)
+	result5 := DecodeRoman("IIV")
+	fmt.Println("DecodeRoman:", result5)
+	result6 := DecodeRoman_recursive("IIV")
+	fmt.Println("DecodeRoman:", result6)
 }

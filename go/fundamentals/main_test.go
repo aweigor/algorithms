@@ -9,7 +9,7 @@ func TestTribonacci(t *testing.T) {
     expected := []float64{1, 1, 1, 3, 5, 9, 17, 31, 57, 105}
     
     if len(result) != len(expected) {
-        t.Errorf("Length mismatch: got %d, want %d", len(result), len(expected))
+        t.Errorf("Values mismatch: got %d, want %d", len(result), len(expected))
     }
     
     for i := range result {
@@ -24,7 +24,7 @@ func TestDisemvowel(t *testing.T) {
     expected := "Ths wbst s fr lsrs LL!"
 
     if result != expected {
-        t.Errorf("Strings mismatch: got %c, want %c", len(result), len(expected))
+        t.Errorf("Values mismatch: got %c, want %c", len(result), len(expected))
     }
 }
 
@@ -32,7 +32,7 @@ func TestBusStop(t *testing.T) {
     result := Passengers([][2]int{{10,0},{3,5},{5,8}})
     expected := 5
     if result != expected {
-        t.Errorf("Length mismatch: got %d, want %d", result, expected)
+        t.Errorf("Values mismatch: got %d, want %d", result, expected)
     }
 }
 
@@ -41,7 +41,7 @@ func TestGetMiddle(t *testing.T) {
     
     expected := "es"
     if result != expected {
-        t.Errorf("Strings mismatch: got %c, want %c", len(result), len(expected))
+        t.Errorf("Values mismatch: got %c, want %c", len(result), len(expected))
     }
 }
 
@@ -49,6 +49,14 @@ func TestFindMissingRune(t *testing.T) {
     result := FindMissingLetter([]rune{'a', 'b', 'c', 'd', 'f'})
     expected := 'e'
     if result != expected {
-        t.Errorf("Length mismatch: got %d, want %d", result, expected)
+        t.Errorf("Values mismatch: got %d, want %d", result, expected)
+    }
+}
+
+func TestDecodeRoman(t *testing.T) {
+    result := DecodeRoman("MDCLXVI")
+    expected := 1666
+    if result != expected {
+        t.Errorf("Values mismatch: got %c, want %c", result, expected)
     }
 }
