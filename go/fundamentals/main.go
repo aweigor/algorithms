@@ -1,7 +1,11 @@
 package main
 
 import (
+	"encoding/binary"
 	"fmt"
+	"math"
+	"net"
+	"strconv"
 	"strings"
 )
 
@@ -192,6 +196,8 @@ func FindOdd_clean(seq []int) int {
 	return res
 }
 
+// https://www.codewars.com/kata/526571aae218b8ee490006f4
+// bits.OnesCount(n) from "math/bits do the same"
 func CountPositiveBits(n uint) int {
 	out := 0
 	for n > 0 {
@@ -199,6 +205,30 @@ func CountPositiveBits(n uint) int {
 		n /= 2
 	}
 	return out
+}
+
+// https://www.codewars.com/kata/526989a41034285187000de4
+func IpsBetween(start, end string) uint32 {
+	startOctets := strings.Split(start, ".")
+	endOctets := strings.Split(end, ".")
+
+  result := uint32(0)
+
+  for i := 3; i >= 0; i-- {
+		startValue, _ := strconv.Atoi(startOctets[i])
+		endValue, _ := strconv.Atoi(endOctets[i]) 
+		diff := endValue - startValue
+		fmt.Println(diff)
+		result += uint32(diff) * uint32(math.Pow(256, float64(3 - i)))
+  }
+	
+	return result
+}
+
+func IpsBetween_clean(first, last string) uint32 {
+  firstVal := binary.BigEndian.Uint32(net.ParseIP(first)[12:16]) // last 4 bytes because net/ip supports ipv6
+  lastVal := binary.BigEndian.Uint32(net.ParseIP(last)[12:16])
+  return lastVal - firstVal
 }
 
 func main() {
@@ -220,4 +250,6 @@ func main() {
 	fmt.Println("FindOdd:", result8)
 	result9 := CountPositiveBits(7)
 	fmt.Println("CountPositiveBits:", result9)
+	result10 := IpsBetween("20.0.0.10", "20.0.1.0")
+	fmt.Println("IpsBetween:", result10)
 }
