@@ -192,6 +192,15 @@ func FindOdd_clean(seq []int) int {
 	return res
 }
 
+func CountPositiveBits(n uint) int {
+	out := 0
+	for n > 0 {
+		out += (int)(n % 2)
+		n /= 2
+	}
+	return out
+}
+
 func main() {
 	result := Tribonacci([3]float64{1, 1, 1}, 10)
   fmt.Println("Tribonacci:", result)
@@ -209,4 +218,6 @@ func main() {
 	fmt.Println("ParseDeadfish:", result7)
 	result8 := FindOdd([]int{20,1,-1,2,-2,3,3,5,5,1,2,4,20,4,-1,-2,5})
 	fmt.Println("FindOdd:", result8)
+	result9 := CountPositiveBits(7)
+	fmt.Println("CountPositiveBits:", result9)
 }
