@@ -325,6 +325,29 @@ func PartsSums_clean(ls []uint64) []uint64 {
 	return v
 }
 
+// https://www.codewars.com/kata/525caa5c1bf619d28c000335
+func TicTacToeChecker(board [3][3]int) int {
+	hasNils := false
+	for i := 0; i < 3; i++ {
+		if (board[i][0] == 2 && board[i][1] == 2 && board[i][2] == 2) || (board[0][i] == 2 && board[1][i] == 2 && board[2][i] == 2) {
+			return 2
+		} else if (board[i][0] == 1 && board[i][1] == 1 && board[i][2] == 1) || (board[0][i] == 1 && board[1][i] == 1 && board[2][i] == 1) {
+			return 1
+		} else if board[i][0] == 0 || board[i][1] == 0 || board[i][2] == 0 {
+			hasNils = true
+		}
+	}
+	if (board[0][0] == 2 && board[1][1] == 2 && board[2][2] == 2) || (board[2][0] == 2 && board[1][1] == 2 && board[0][2] == 2) {
+		return 2
+	} else if (board[0][0] == 1 && board[1][1] == 1 && board[2][2] == 1) || (board[2][0] == 1 && board[1][1] == 1 && board[0][2] == 1) {
+		return 1
+	}
+	if hasNils {
+		return -1
+	}
+	return 0
+}
+
 func main() {
 	result := Tribonacci([3]float64{1, 1, 1}, 10)
 	fmt.Println("Tribonacci:", result)
@@ -350,4 +373,11 @@ func main() {
 	fmt.Println("IsAlphanumeric:", result11)
 	result12 := PartsSums_optimized([]uint64{0, 1, 3, 6, 10})
 	fmt.Println("PartsSums:", result12)
+	board := [3][3]int{
+		{0, 0, 1},
+		{0, 1, 2},
+		{2, 1, 0},
+	}
+	result13 := TicTacToeChecker(board)
+	fmt.Println("TicTacToeChecker:", result13)
 }
