@@ -297,6 +297,34 @@ func MaximumSubarraySum(numbers []int) int {
 	return maxSum
 }
 
+// https://www.codewars.com/kata/5ce399e0047a45001c853c2b/
+func PartsSums(ls []uint64) []uint64 {
+	res := []uint64{0}
+	for i := len(ls) - 1; i >= 0; i-- {
+		res = append([]uint64{res[0] + ls[i]}, res...)
+	}
+	return res
+}
+
+func PartsSums_optimized(ls []uint64) []uint64 {
+	res := []uint64{0}
+	for i := len(ls) - 1; i >= 0; i-- {
+		res = append(res, res[len(res)-1]+ls[i])
+	}
+	for i, j := 0, len(res)-1; i < j; i, j = i+1, j-1 {
+		res[i], res[j] = res[j], res[i]
+	}
+	return res
+}
+
+func PartsSums_clean(ls []uint64) []uint64 {
+	v := make([]uint64, len(ls)+1)
+	for i := len(ls) - 1; i >= 0; i-- {
+		v[i] = v[i+1] + ls[i]
+	}
+	return v
+}
+
 func main() {
 	result := Tribonacci([3]float64{1, 1, 1}, 10)
 	fmt.Println("Tribonacci:", result)
@@ -320,4 +348,6 @@ func main() {
 	fmt.Println("IpsBetween:", result10)
 	result11 := IsAlphanumeric("abc$")
 	fmt.Println("IsAlphanumeric:", result11)
+	result12 := PartsSums_optimized([]uint64{0, 1, 3, 6, 10})
+	fmt.Println("PartsSums:", result12)
 }
