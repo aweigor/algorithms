@@ -245,10 +245,56 @@ func IpsBetween_clean(first, last string) uint32 {
 	return lastVal - firstVal
 }
 
-// https://www.codewars.com/kata/526dbd6c8c0eb53254000110/solutions/go
+// https://www.codewars.com/kata/526dbd6c8c0eb53254000110
 func IsAlphanumeric(s string) bool {
 	r := regexp.MustCompile("^[a-zA-Z0-9]+$")
 	return r.MatchString(s)
+}
+
+// https://www.codewars.com/kata/54521e9ec8e60bc4de000d6c/
+// for every positive numbers look left and right for positive sum,
+// if positive sum found: extend the border
+func MaximumSubarraySum(numbers []int) int {
+	var buf, seq []int
+	currentSum, tmpSum, maxSum := 0, 0, 0
+	for i, n0 := range numbers {
+		if n0 > 0 {
+			seq = []int{n0}
+			currentSum = n0
+			tmpSum = 0
+			for j := i - 1; j >= 0; j-- {
+				if tmpSum > 0 {
+					for n1 := range buf {
+						seq = append(seq, n1)
+					}
+					buf = []int{}
+					seq = append(seq, numbers[j])
+					currentSum += tmpSum
+				} else {
+					buf = append(buf, numbers[j])
+				}
+			}
+			tmpSum = 0
+			for j := i + 1; j < len(numbers); j++ {
+				tmpSum += numbers[j]
+				if tmpSum > 0 {
+					for n1 := range buf {
+						seq = append(seq, n1)
+					}
+					buf = []int{}
+					seq = append(seq, numbers[j])
+					currentSum += tmpSum
+					tmpSum = 0
+				} else {
+					buf = append(buf, numbers[j])
+				}
+			}
+			if currentSum > maxSum {
+				maxSum = currentSum
+			}
+		}
+	}
+	return maxSum
 }
 
 func main() {
