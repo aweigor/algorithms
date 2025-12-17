@@ -55,13 +55,23 @@ def ips_between__oneliner(start, end):
     b = sum([int(e)*256**(3-i) for i, e in enumerate(end.split('.'))])
     return abs(a-b)
 
+# https://www.codewars.com/kata/529b418d533b76924600085d
+def to_underscore(string: str) -> str:
+    for i, char in enumerate(string):
+        if not char.isalpha():
+            continue
+        elif i == 0:
+            string = char.lower() + string[1:]
+        elif char.isupper():
+            return string[:i] + '_' + to_underscore(string[i:])
+    return string
 
 
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
     print(result)
-
-
+    result = to_underscore('ThisIsBeautifulDay')
+    print(result)
 
 
 if __name__ == '__main__':
