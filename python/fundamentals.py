@@ -67,6 +67,13 @@ def to_underscore(string: str) -> str:
     return string
 
 
+# https://www.codewars.com/kata/53af2b8861023f1d88000832
+def areYouPlayingBanjo(name):
+    if name[0].lower() == 'r':
+        return "{} plays banjo".format(name)
+    return "{} does not play banjo".format(name)
+
+
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
     print(result)
