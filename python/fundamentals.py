@@ -73,6 +73,24 @@ def areYouPlayingBanjo(name):
         return "{} plays banjo".format(name)
     return "{} does not play banjo".format(name)
 
+# https://www.codewars.com/kata/514a024011ea4fb54200004b
+def domain_name(url):
+    if "//" in url:
+        parts = url.split("//", 1)
+        after_slash = parts[1]
+    else:
+        after_slash = url
+
+    domain = after_slash.split("/")[0]
+    domain_parts = after_slash.split(".")
+
+    if domain_parts[0] == "www":
+        return domain_parts[1]
+    else:
+        return domain_parts[0]
+
+def domain_name_clean(url):
+    return url.split("//")[-1].split("www.")[-1].split(".")[0]
 
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
