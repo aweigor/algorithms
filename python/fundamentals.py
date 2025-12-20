@@ -92,10 +92,29 @@ def domain_name(url):
 def domain_name_clean(url):
     return url.split("//")[-1].split("www.")[-1].split(".")[0]
 
+# https://www.codewars.com/kata/51fc12de24a9d8cb0e000001/
+def valid_ISBN10(isbn):
+    if not len(isbn) == 10:
+        return False
+    checksum = 0
+    for i in range(9):
+        if not isbn[i].isdigit():
+            return False
+        checksum = (checksum + (int(isbn[i]) * (i + 1)) )% 11
+
+    if not isbn[9].isdigit() and not isbn[9] == 'X':
+        return False
+
+    lastdigit = int(isbn[9]) if isbn[9].isdigit() else 10
+    checksum = (checksum + lastdigit * 10) % 11
+    return checksum == 0
+
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
     print(result)
     result = to_underscore('ThisIsBeautifulDay')
+    print(result)
+    result = valid_ISBN10('1112223339')
     print(result)
 
 
