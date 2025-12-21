@@ -109,6 +109,23 @@ def valid_ISBN10(isbn):
     checksum = (checksum + lastdigit * 10) % 11
     return checksum == 0
 
+# https://www.codewars.com/kata/54e6533c92449cc251001667
+def unique_in_order(sequence):
+    unique = []
+    prev = None
+    for ele in sequence:
+        if prev == ele:
+            continue
+        unique.append(ele)
+        prev = ele
+    return unique
+
+def unique_in_order_minimal(iterable):
+    r = []
+    for x in iterable:
+        x in r[-1:] or r.append(x)
+    return r
+
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
     print(result)
