@@ -126,6 +126,13 @@ def unique_in_order_minimal(iterable):
         x in r[-1:] or r.append(x)
     return r
 
+# https://www.codewars.com/kata/54ff3102c1bad923760001f3
+def get_vowels(s):
+    return len([char for char in s if char in 'aieou'])
+
+def get_vowels__minimal(s):
+    return sum(c in 'aeiou' for c in s)
+
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
     print(result)
