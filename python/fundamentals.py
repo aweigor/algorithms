@@ -147,6 +147,13 @@ def DNA_strand(dna):
 def DNA_strand__builtin(dna):
     return dna.translate(string.maketrans("ATCG","TAGC"))
 
+# https://www.codewars.com/kata/554b4ac871d6813a03000035
+def high_and_low(numbers):
+    nums = [int(num) for num in numbers.split(' ')]
+    return f"{max(nums)} {min(nums)}"
+
+
+
 
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
