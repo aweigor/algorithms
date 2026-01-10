@@ -231,6 +231,10 @@ def find_uniq_minimal(arr):
     a, b = set(arr)
     return a if arr.count(a) == 1 else b
 
+
+def reverse_string(string):
+    return string[::-1]
+
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
     print(result)
