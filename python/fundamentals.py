@@ -235,6 +235,13 @@ def find_uniq_minimal(arr):
 def reverse_string(string):
     return string[::-1]
 
+# https://www.codewars.com/kata/56269eb78ad2e4ced1000013/
+def find_next_square(sq):
+    root = sq ** 0.5
+    if root.is_integer():
+        return (root + 1)**2
+    return -1
+
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
     print(result)
