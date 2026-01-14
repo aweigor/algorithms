@@ -247,6 +247,10 @@ def pig_it(text):
     lst = text.split()
     return ' '.join( [word[1:] + word[:1] + 'ay' if word.isalpha() else word for word in lst])
 
+# https://www.codewars.com/kata/5467e4d82edf8bbf40000155
+def descending_order(num):
+    return int(''.join(sorted(str(num), reverse=True)))
+
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
     print(result)
@@ -256,6 +260,7 @@ def run_tests():
     print(result)
     result = persistence(39)
     print(result)
+    print(descending_order(123444))
 
 if __name__ == '__main__':
     run_tests()
