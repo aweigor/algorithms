@@ -257,6 +257,10 @@ def lovefunc( flower1, flower2 ):
 def lovefunc_binary( a, b ):
     return (a ^ b) & 1
 
+# https://www.codewars.com/kata/5601409514fc93442500010b
+def better_than_average(class_points, your_points):
+    return sum(class_points) / len(class_points) < your_points
+
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
     print(result)
