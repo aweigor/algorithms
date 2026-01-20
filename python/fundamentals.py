@@ -261,6 +261,19 @@ def lovefunc_binary( a, b ):
 def better_than_average(class_points, your_points):
     return sum(class_points) / len(class_points) < your_points
 
+# https://www.codewars.com/kata/52449b062fb80683ec000024
+def generate_hashtag(s):
+    if not s:
+        return False
+    l = 1
+    out = '#'
+    for word in s.split(' '):
+        l += len(word)
+        if l > 140:
+            return False
+        out += word.capitalize()
+    return out
+
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
     print(result)
