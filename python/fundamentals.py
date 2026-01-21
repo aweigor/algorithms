@@ -2,6 +2,8 @@
 import ipaddress
 import math
 import string
+from collections import Counter
+
 from numpy import mean
 from ipaddress import IPv4Address
 
@@ -260,6 +262,29 @@ def lovefunc_binary( a, b ):
 # https://www.codewars.com/kata/5601409514fc93442500010b
 def better_than_average(class_points, your_points):
     return sum(class_points) / len(class_points) < your_points
+
+# https://www.codewars.com/kata/52bc74d4ac05d0945d00054e
+def first_non_repeating_letter(s):
+    uniques = []
+    removed = []
+    for c in s:
+        if any(c.lower() == u.lower() for u in uniques):
+            if c.lower() in uniques:
+                uniques.remove(c.lower())
+            else:
+                uniques.remove(c.upper())
+            removed.append(c.lower())
+        else:
+            if not c.lower() in removed:
+                uniques.append(c)
+    return '' if not uniques else uniques[0]
+
+def first_non_repeating_letter_minimal(string):
+    cnt = Counter(string.lower())
+    for letter in string:
+        if cnt[letter.lower()] == 1:
+            return letter
+    return ''
 
 # https://www.codewars.com/kata/52449b062fb80683ec000024
 def generate_hashtag(s):
