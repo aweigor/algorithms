@@ -326,6 +326,35 @@ def scramble(s1, s2):
                 p_sample += 1
     return False
 
+# https://www.codewars.com/kata/54a91a4883a7de5d7800009c
+def increment_string(strng):
+    src = ''
+    numstr = ''
+    for i in range(len(strng) -1, -1, -1):
+        if not (strng[i]).isdecimal():
+            src = strng[:i+1]
+            break
+        numstr = strng[i] + numstr
+
+    if not numstr:
+        return strng + '1'
+
+    maxpos = len(numstr)
+    numout = str(int(numstr) + 1)
+    if maxpos == len(str(int(numstr))):
+        return src + numout
+
+    if len(numout) > maxpos:
+        return src + numout[-maxpos:]
+    else:
+        return src + numout.zfill(maxpos)
+
+def increment_string_minimal(strng):
+    head = strng.rstrip('0123456789')
+    tail = strng[len(head):]
+    if tail == "": return strng+"1"
+    return head + str(int(tail) + 1).zfill(len(tail))
+
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
     print(result)
@@ -337,6 +366,7 @@ def run_tests():
     print(result)
     print(descending_order(123444))
     print(order_weight("103 123 4444 99 2000"))
+    print(increment_string("[6074531754650710000819591"))
 
 if __name__ == '__main__':
     run_tests()
