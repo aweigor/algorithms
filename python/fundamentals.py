@@ -396,6 +396,39 @@ def trailing_zeros_of_factorial(n):
         z = z * 5
     return r
 
+
+# https://www.codewars.com/kata/55aa075506463dac6600010d
+def list_squared(m, n):
+    res = []
+    for i in range(m, n + 1):
+        divisors = []
+        sqr = math.ceil(math.sqrt(i))
+        for j in range(1, sqr + 1):
+            if i % j == 0 and not j in divisors:
+                divisors.append(j)
+                if j * j != i:
+                    divisors.append(i // j)
+        if not divisors:
+            continue
+        squared_sum = sum([x**2 for x in divisors])
+        sqrt_of_squared = int(math.sqrt(squared_sum))
+        if sqrt_of_squared * sqrt_of_squared == squared_sum:
+            res.append([i, squared_sum])
+    return res
+
+def list_squared_minimal(m, n):
+    out = []
+    for i in range(m, n + 1):
+        # Finding all divisors below the square root of i
+        possibles = set([x for x in range(1, int(i ** 0.5) + 1) if i % x == 0])
+        # And adding their counterpart
+        possibles.update([i / x for x in possibles])
+        # Doubles in the possibles are solved due to the set
+        val = sum(x ** 2 for x in possibles)
+        # Checking for exact square
+        if (int(val ** 0.5)) ** 2 == val: out.append([i, val])
+    return out
+
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
     print(result)
@@ -410,6 +443,7 @@ def run_tests():
     print(increment_string("[6074531754650710000819591"))
     print(greed_is_good([2, 4, 4, 5, 4]))
     print(trailing_zeros_of_factorial(100))
+    print(list_squared(1, 250))
 
 if __name__ == '__main__':
     run_tests()
