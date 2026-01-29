@@ -429,6 +429,26 @@ def list_squared_minimal(m, n):
         if (int(val ** 0.5)) ** 2 == val: out.append([i, val])
     return out
 
+def last_digit(n1, n2):
+    if n2 == 0:
+        return 1
+    last_int = n1 % 10
+    pattern = [last_int]
+    test = last_int
+    while True:
+        test *= last_int
+        n = test % 10
+        if n == last_int:
+            break
+        pattern.append(n)
+    return pattern[n2 % len(pattern) - 1]
+
+# for x^y mod z the periodicity is always a factor of p-1 for all x and y where p is a prime factor of z
+# for any number from 1 to 9 after 4 times the last digit will repeat
+def last_digit_minimal(n1, n2):
+    return (n1 % 10) ** (n2 % 4 + 4 * bool(n2)) % 10
+
+
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
     print(result)
@@ -444,6 +464,7 @@ def run_tests():
     print(greed_is_good([2, 4, 4, 5, 4]))
     print(trailing_zeros_of_factorial(100))
     print(list_squared(1, 250))
+    print(last_digit(2 ** 200, 2 ** 300))
 
 if __name__ == '__main__':
     run_tests()
