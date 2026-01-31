@@ -449,6 +449,35 @@ def last_digit_minimal(n1, n2):
     return (n1 % 10) ** (n2 % 4 + 4 * bool(n2)) % 10
 
 
+def is_prime(num):
+    if num == 2 or num == 3 or num == 5:
+        return True
+    if num <= 1 or num % 2 == 0 or num % 3 == 0 or num % 5 == 0:
+        return False
+    maxn = int(math.sqrt(num) // 6) + 1
+    for i in range(1, maxn):
+        p1 = i * 6 + 1
+        p5 = i * 6 + 5
+        if num % p1 == 0 or num % p5 == 0:  # OR not |
+            return False
+    return True
+
+
+# https://www.codewars.com/kata/561e9c843a2ef5a40c0000a4
+# return the first pair of two prime numbers spaced with a gap of g between the limits m, n if these numbers exist otherwise None
+def gap(g, m, n):
+    if g % 2 != 0:
+        return None # gap of 2 primes always even
+    pp = None
+    for p in range(m, n + 1):
+        if is_prime(p):
+            if pp is not None:
+                if p - pp ==g:
+                    return [pp, p]
+            pp = p
+    return None
+
+
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
     print(result)
@@ -465,6 +494,7 @@ def run_tests():
     print(trailing_zeros_of_factorial(100))
     print(list_squared(1, 250))
     print(last_digit(2 ** 200, 2 ** 300))
+    print(gap(2,100,103))
 
 if __name__ == '__main__':
     run_tests()
