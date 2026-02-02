@@ -477,6 +477,34 @@ def gap(g, m, n):
             pp = p
     return None
 
+def choose_best_sum(t, k, ts):
+    if not ts:
+        return None
+    if k == 1:
+        test = [x for x in ts if x <= t]
+        if not test:
+            return None
+        return max(test)
+    best_sum = None
+    for i in range(len(ts)):
+        this_route = ts[i]
+        other_routes = ts[i+1:]
+        test = choose_best_sum(t - this_route, k - 1, other_routes)
+        if test is not None:
+            test_sum = this_route + test
+            if not best_sum or test_sum > best_sum:
+                best_sum = test_sum
+    return best_sum
+
+
+# https://www.codewars.com/kata/529adbf7533b761c560004e5
+memo = {}
+def fibonacci(n):
+    if n in [0, 1]:
+        return n
+    if n not in memo:
+        memo[n] = fibonacci(n - 1) + fibonacci(n - 2)
+    return memo[n]
 
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
@@ -495,6 +523,8 @@ def run_tests():
     print(list_squared(1, 250))
     print(last_digit(2 ** 200, 2 ** 300))
     print(gap(2,100,103))
+    print(choose_best_sum(163, 3, [50, 55, 56, 57, 58]))
+    print(fibonacci(589))
 
 if __name__ == '__main__':
     run_tests()
