@@ -506,6 +506,37 @@ def fibonacci(n):
         memo[n] = fibonacci(n - 1) + fibonacci(n - 2)
     return memo[n]
 
+def remov_nb(n):
+    if n < 26:
+        return []
+    f = n * (n + 1) // 2
+    res = []
+    left = 0
+    for i in range(n - 1, -1, -1):
+        for j in range(left, i):
+            s = f - i - j
+            if i * j >= s:
+                left = j
+                break
+        if i == left:
+            break
+        if i * left == s:
+            res.append((left, i))
+            res.append((i, left))
+    return res
+
+# https://www.codewars.com/kata/5547cc7dcad755e480000004
+# the product of a and b should be equal to the sum of all numbers in the sequence, excluding a and b
+def removNb_math(n):
+    total = n*(n+1)/2
+    sol = []
+    for a in range(1,n+1):
+        b = (total-a)/(a+1.0)
+        if b.is_integer() and b <= n:
+            sol.append((a,int(b)))
+    return sol
+
+
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
     print(result)
@@ -525,6 +556,7 @@ def run_tests():
     print(gap(2,100,103))
     print(choose_best_sum(163, 3, [50, 55, 56, 57, 58]))
     print(fibonacci(589))
+    print(remov_nb(26))
 
 if __name__ == '__main__':
     run_tests()
