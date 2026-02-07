@@ -4,7 +4,6 @@ import math
 import string
 from collections import Counter
 
-from numpy import mean
 from ipaddress import IPv4Address
 
 class PaginationHelper:
@@ -44,11 +43,6 @@ class PaginationHelper:
             return item_index // self.items_per_page
         return -1
         pass
-
-
-def distances_from_average(test_list):
-    avg = mean(test_list)
-    return [round(avg - x, 2) for x in test_list]
 
 def ips_between(start, end):
     return int(IPv4Address(end)) - int(IPv4Address(start))
@@ -552,11 +546,40 @@ def isPP(n):
 
 # https://www.codewars.com/kata/51edd51599a189fe7f000015
 # Finding difference betwen a and b (simple)
-def solution(array_a, array_b):
+def diff_sol(array_a, array_b):
     sum = 0
     for i in range(len(array_a)):
         sum += (array_b[i] - array_a[i]) ** 2
     return sum / len(array_a)
+
+# https://www.codewars.com/kata/54d7660d2daf68c619000d95
+# Find common denominators of fractions provided in the array
+def convert_fracts(lst):
+    dnrs = [x[1] for x in lst]
+    primes = []
+    for i in range(2, max(dnrs)):
+        while True:
+            found_new_factor = False
+            for j in range(len(dnrs)):
+                if dnrs[j] % i == 0:
+                    dnrs[j] //= i
+                    if not found_new_factor:
+                        found_new_factor = True
+                        primes.append(i) # only once per iter
+            if not found_new_factor:
+                break
+    lcm = 1
+    for d in primes:
+        lcm *= d
+
+    return [[x[0] * (lcm // x[1]), lcm] for x in lst]
+
+def convertFracts_minimal(lst):
+    D = 1
+    for _,d in lst:
+        D*= d//math.gcd(d,D)
+    return [[D*n//d,D] for n,d in lst]
+
 
 
 def run_tests():
@@ -580,6 +603,7 @@ def run_tests():
     print(fibonacci(589))
     print(remov_nb(26))
     print(isPP(125))
+    print(convert_fracts([[154, 260], [84, 260], [195, 260]]))
 
 if __name__ == '__main__':
     run_tests()
