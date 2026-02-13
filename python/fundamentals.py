@@ -628,6 +628,11 @@ def series_sum(n):
         r += 1 / (1 + 3 * i)
     return f"{r:.2f}"
 
+# https://www.codewars.com/kata/555eded1ad94b00403000071/
+# Compute the multiplication of 2 matrices
+def matrix_mult(a: list[list[int]], b: list[list[int]]) -> list[list[int]]:
+    N = len(a)
+    return [[sum([row[j] * b[j][i] for j in range(N) ]) for i in range(N)] for row in a]
 
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
@@ -653,6 +658,10 @@ def run_tests():
     print(convert_fracts([[154, 260], [84, 260], [195, 260]]))
     print(flap_display(["CAT"], [[1, 13, 27]]))
     print(series_sum(3))
+    print(matrix_mult([ [1, 2],
+            [3, 2] ],
+          [ [3, 2],
+            [1, 1] ]))
 
 
 if __name__ == '__main__':
