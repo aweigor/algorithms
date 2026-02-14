@@ -5,6 +5,8 @@ import string
 from collections import Counter
 
 from ipaddress import IPv4Address
+from itertools import count
+
 
 class PaginationHelper:
 
@@ -634,6 +636,21 @@ def matrix_mult(a: list[list[int]], b: list[list[int]]) -> list[list[int]]:
     N = len(a)
     return [[sum([row[j] * b[j][i] for j in range(N) ]) for i in range(N)] for row in a]
 
+# https://www.codewars.com/kata/585d8c8a28bc7403ea0000c3
+# Find unique string
+def find_uniq(arr):
+    if set(arr[0].lower()) == set(arr[1].lower()):
+        majority_set = set(arr[0].lower())
+    elif set(arr[0].lower()) == set(arr[2].lower()):
+        majority_set = set(arr[0].lower())
+    else:
+        majority_set = set(arr[1].lower())
+
+    for string in arr:
+        if set(string.lower()) != majority_set:
+            return string
+
+
 def run_tests():
     result = ips_between('10.0.0.0', '10.0.1.0')
     print(result)
@@ -662,7 +679,7 @@ def run_tests():
             [3, 2] ],
           [ [3, 2],
             [1, 1] ]))
-
+    print(find_uniq([ 'Tom Marvolo Riddle', 'I am Lord Voldemort', 'Harry Potter' ]))
 
 if __name__ == '__main__':
     run_tests()
